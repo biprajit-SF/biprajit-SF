@@ -1,0 +1,626 @@
+{
+	"info": {
+		"_postman_id": "ab1bfdb5-da12-4eb1-a5ac-581cbbf0d54c",
+		"name": "Salesforce Data Cloud APIs Copy",
+		"description": "This is a collection of 45+ requests for the following Salesforce Data Cloud APIs:\n\n<table><tbody><tr><td><ul><li><p>Profile API</p></li><li><p>Query API</p></li><li><p>Calculated Insights API</p></li><li><p>Metadata API</p></li><li><p>Ingestion API</p></li><li><p>Segmentation API</p></li></ul></td></tr></tbody></table>\n\nThe collection is divided into 2 API types.\n\n- **Direct APIs** - allows you to perform some of the Salesforce CDP application tasks programmatically via a Direct API to the underlying data store. This is the preferred approach to API connections.\n- **Connect APIs** - The Connect APIs allow users to make the same API calls directly from Salesforce’s connect interface. This allows for these APIs to be called in flows as well.\n    \n\nCalling APIs directly using the non connect method typically offers the best performance. However, there are use cases where that doesn't make sense. Therefore, please be advised that calling CONNECT APIs directly does not conform to the same SLAs that calling the API directly offers.\n\n**⚠️ Disclaimers:**\n\n- This collection is provided as-is. It's not officially supported by Salesforce or covered by SLAs.\n- API documentation is not provided with the collection. Please refer to the [official documentation](https://developer.salesforce.com/docs/atlas.en-us.c360a_api.meta/c360a_api/c360a_api_quick_start.htm).\n- To help us better understand usage of the collection, we leverage Google Analytics. If you would like to opt out of the tracking, you can remove the Pre-request Script set at the collection level.\n    \n\nℹ️ Report issues and ask questions [here](https://github.com/salesforce-marketingcloud/c360-postman/issues).\n\n## Get started\n\nFollow [this documentation](https://github.com/salesforce-marketingcloud/c360-postman) to get started with the collection.\n\n## Variables Reference\n\nThe collection relies on the following variables:\n\n| Variable | Example Value | Description | Used In Direct APIs | Used In Connect APIs |\n| --- | --- | --- | --- | --- |\n| `loginUrl` | login.salesforce.com | Using login.salesforce.com will be fine unless you are using a sandbox. | X | X |\n| `version` | 52.0 | Salesforce API version number |  | X |\n| `clientId` | 3MVG9l2zHsylwlpR6H5xByqIHvFbLVATgzkY... | Consumer key from the connected app. | X | X |\n| `clientSecret` | 775C20434DB475FC326765353AF5210D4... | Consumer secret from the connected app. |  | X |\n| `privateKey` | \\-----BEGIN RSA PRIVATE KEY----- xxxxxxxx  <br>\\-----END RSA PRIVATE KEY----- | Contents of `host.key` file. | X |  |\n| `userName` | [aaroncates@aaroncates-20210405.demo](mailto:aaroncates@aaroncates-20210405.demo) | User Name of the authorized user. | X | X |\n| `password` | superSecretPassword1! | Password of the authorized user. |  | X |\n| `securityToken` | fVhwzeDFMrAh4IC9hS | Salesforce security token for the authorized user. Details for securing a token available [here](https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_concepts_security.htm). |  | X |\n\nDetail documentation around these variables is available [here](https://github.com/salesforce-marketingcloud/c360-postman/blob/main/install-the-collection.md).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3125628",
+		"_collection_link": "https://interstellar-moon-700840.postman.co/workspace/My-Workspace~4e15ac54-4c48-448e-813b-cf2c1f26b6ec/collection/3125628-ab1bfdb5-da12-4eb1-a5ac-581cbbf0d54c?action=share&source=collection_link&creator=3125628"
+	},
+	"item": [
+		{
+			"name": "Scratch Copy",
+			"item": [
+				{
+					"name": "Ingestion API",
+					"item": [
+						{
+							"name": "Auth Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const context = pm.environment.name ? pm.environment : pm.collectionVariables;",
+											"",
+											"const response = JSON.parse(responseBody);",
+											"",
+											"if (response.access_token) {",
+											"  tests[\"Body has accessToken\"] = true; ",
+											"  context.set(\"dne_cdpAuthToken\", response.access_token);",
+											"  context.set(\"dne_cdpInstanceUrl\", response.instance_url);",
+											"}",
+											"else {",
+											"  tests[\"Body has access_token\"] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://login.salesforce.com/services/oauth2/token",
+									"protocol": "https",
+									"host": [
+										"login",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"services",
+										"oauth2",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Token Exchange",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://mydomain.my.salesforce.com/services/a360/token?Content-Type=x-www-form-urlencoded&grant_type=urn:salesforce:grant-type:external:cdp&subject_token=&subject_token_type=urn:ietf:params:oauth:token-type:access_token",
+									"protocol": "https",
+									"host": [
+										"mydomain",
+										"my",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"services",
+										"a360",
+										"token"
+									],
+									"query": [
+										{
+											"key": "Content-Type",
+											"value": "x-www-form-urlencoded"
+										},
+										{
+											"key": "grant_type",
+											"value": "urn:salesforce:grant-type:external:cdp"
+										},
+										{
+											"key": "subject_token",
+											"value": ""
+										},
+										{
+											"key": "subject_token_type",
+											"value": "urn:ietf:params:oauth:token-type:access_token"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert Records Ingest API",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n       \"data\": [{\n        \"ChargeID\":123,\n        \"Charge_end\":\"2024-01-07T10:11:11.816319Z\",\n        \"Cycle_count\":\"455\",\n        \"Charging_percent\":\"50\",\n        \"Charging_Station_ID\":\"Wilton\",\n        \"Charge_start\":\"2024-01-07T09:11:11.816319Z\"\n\n    }\n]}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://TSE.c360a.salesforce.com/api/v1/ingest/sources/IngestionConnector/Objectname",
+									"protocol": "https",
+									"host": [
+										"TSE",
+										"c360a",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"ingest",
+										"sources",
+										"IngestionConnector",
+										"Objectname"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Insert Records",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n       \"data\": [{\n        \"maid\":101,\n        \"first_name\":\"Sandeep\",\n        \"last_name\":\"Aulakh\",\n        \"email\":\"saulakh@salesforce-nto.com\",\n        \"gender\":\"Male\",\n        \"city\":\"Wilton\",\n        \"state\":\"CT\",\n        \"created\":\"2021-10-22T09:11:11.816319Z\"\n    },\n    {\n        \"maid\":102,\n        \"first_name\":\"Aaron\",\n        \"last_name\":\"Cates\",\n        \"email\":\"acates@salesforce-nto.com\",\n        \"gender\":\"Male\",\n        \"city\":\"San Francisco\",\n        \"state\":\"CA\",\n        \"created\":\"2021-10-22T09:11:11.816319Z\"\n    }\n]}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{dne_cdpOffcoreUrl}}/api/v1/ingest/sources/Event_API/runner_profiles",
+											"protocol": "https",
+											"host": [
+												"{{dne_cdpOffcoreUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"ingest",
+												"sources",
+												"Event_API",
+												"runner_profiles"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [],
+									"cookie": [],
+									"body": "{\n    \"accepted\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Open a Bulk Ingest Job",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJraWQiOiJDT1JFLjAwRDN5MDAwMDAxVEJrWi4xNjk5NTc4OTMxMDg0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tL2lkLzAwRDN5MDAwMDAxVEJrWkVBVy8wMDUzeTAwMDAwSDhLYktBQVYiLCJzY3AiOiJjZHBfaW5nZXN0X2FwaSBjZHBfYXBpIGNkcF9xdWVyeV9hcGkiLCJpc3MiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tLyIsIm9yZ0lkIjoiMDBEM3kwMDAwMDFUQmtaIiwiaXNzdWVyVGVuYW50SWQiOiJjb3JlL3Byb2QvMDBEM3kwMDAwMDFUQmtaRUFXIiwic2ZhcHBpZCI6IjNNVkc5bGc4MWpUZzczVmdpN1pycnd6cnEyNGM5eGdQNUdIeXRvLmR6ZW9Odjg4a0VFaVUuZTBIdXdEZ3Rrd3JubVhLalNPUnlQVkFkQXlDWFRGNFoiLCJhdWRpZW5jZVRlbmFudElkIjoiYTM2MC9wcm9kL2U3NjAxMDEyZWU5MDRjYWM4ODMyNzUxZjVjNjM0MzE2IiwiY3VzdG9tX2F0dHJpYnV0ZXMiOnsiZGF0YXNwYWNlIjoiZGVmYXVsdCJ9LCJhdWQiOiJhcGkuYTM2MC5zYWxlc2ZvcmNlLmNvbSIsIm5iZiI6MTcwNDY3ODc2MCwic2ZvaWQiOiIwMEQzeTAwMDAwMVRCa1oiLCJzZnVpZCI6IjAwNTN5MDAwMDBIOEtiSyIsImV4cCI6MTcwNDY4NjAwNiwiaWF0IjoxNzA0Njc4ODIwLCJqdGkiOiIwMDVjZjg4MS0yOWM1LTQ1MmItYTk1Zi1iNzViOWVlYzcxZTgifQ.q0NpdL39bSOYIPwr7L5_b172d5jAwwaSsLFojJEGTuCdh6jDeY2dEmzm9J2JDGQdhEyx-GvPfcG7TZh0kML9uw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"object\":\"Charging_data\",\n   \"sourceName\":\"Bipra_ingest\",\n   \"operation\":\"upsert\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://gjrtgnbvh03t0nddgqytq9bxgq.c360a.salesforce.com/api/v1/ingest/jobs",
+									"protocol": "https",
+									"host": [
+										"gjrtgnbvh03t0nddgqytq9bxgq",
+										"c360a",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"ingest",
+										"jobs"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create Job",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n   \"object\":\"runner_profiles\",\n   \"sourceName\":\"Event_API\",\n   \"operation\":\"upsert\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{dne_cdpOffcoreUrl}}/api/v1/ingest/jobs",
+											"protocol": "https",
+											"host": [
+												"{{dne_cdpOffcoreUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"ingest",
+												"jobs"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [],
+									"cookie": [],
+									"body": "{\n    \"object\": \"runner_profiles\",\n    \"id\": \"78f56f55-c00a-4e20-ab7d-03307a319ff2\",\n    \"operation\": \"upsert\",\n    \"sourceName\": \"Event_API\",\n    \"createdById\": \"0053y00000FUGfBAAX\",\n    \"createdDate\": \"2021-10-28T19:44:20.284675Z\",\n    \"systemModstamp\": \"2021-10-28T19:44:20.284675Z\",\n    \"state\": \"Open\",\n    \"contentType\": \"CSV\",\n    \"apiVersion\": \"v1\",\n    \"contentUrl\": \"/api/v1/ingest/jobs/78f56f55-c00a-4e20-ab7d-03307a319ff2/batches\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Upload csv to a open Job",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJraWQiOiJDT1JFLjAwRDN5MDAwMDAxVEJrWi4xNjk5NTc4OTMxMDg0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tL2lkLzAwRDN5MDAwMDAxVEJrWkVBVy8wMDUzeTAwMDAwSDhLYktBQVYiLCJzY3AiOiJjZHBfaW5nZXN0X2FwaSBjZHBfYXBpIGNkcF9xdWVyeV9hcGkiLCJpc3MiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tLyIsIm9yZ0lkIjoiMDBEM3kwMDAwMDFUQmtaIiwiaXNzdWVyVGVuYW50SWQiOiJjb3JlL3Byb2QvMDBEM3kwMDAwMDFUQmtaRUFXIiwic2ZhcHBpZCI6IjNNVkc5bGc4MWpUZzczVmdpN1pycnd6cnEyNGM5eGdQNUdIeXRvLmR6ZW9Odjg4a0VFaVUuZTBIdXdEZ3Rrd3JubVhLalNPUnlQVkFkQXlDWFRGNFoiLCJhdWRpZW5jZVRlbmFudElkIjoiYTM2MC9wcm9kL2U3NjAxMDEyZWU5MDRjYWM4ODMyNzUxZjVjNjM0MzE2IiwiY3VzdG9tX2F0dHJpYnV0ZXMiOnsiZGF0YXNwYWNlIjoiZGVmYXVsdCJ9LCJhdWQiOiJhcGkuYTM2MC5zYWxlc2ZvcmNlLmNvbSIsIm5iZiI6MTcwNDY3ODc2MCwic2ZvaWQiOiIwMEQzeTAwMDAwMVRCa1oiLCJzZnVpZCI6IjAwNTN5MDAwMDBIOEtiSyIsImV4cCI6MTcwNDY4NjAwNiwiaWF0IjoxNzA0Njc4ODIwLCJqdGkiOiIwMDVjZjg4MS0yOWM1LTQ1MmItYTk1Zi1iNzViOWVlYzcxZTgifQ.q0NpdL39bSOYIPwr7L5_b172d5jAwwaSsLFojJEGTuCdh6jDeY2dEmzm9J2JDGQdhEyx-GvPfcG7TZh0kML9uw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "text/csv"
+									},
+									{
+										"key": "Content-Length",
+										"value": "0",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "Charge_end,Charge_start,ChargeID,Charging_percent,Charging_Station_ID,Cycle_count\n2023-01-21T09:11:11.816319Z,2023-01-21T11:11:11.816319Z,C123,60,3444,11",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://TSE.c360a.salesforce.com/api/v1/ingest/jobs/JOBID/batches",
+									"protocol": "https",
+									"host": [
+										"TSE",
+										"c360a",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"ingest",
+										"jobs",
+										"JOBID",
+										"batches"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Upload Job",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "text/csv",
+												"disabled": true
+											},
+											{
+												"key": "Content-Length",
+												"value": "0",
+												"disabled": true
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "maid,first_name,last_name,email,gender,city,state,created\n201,Sandeep_csv,Aulakh_csv,saulakh+ntodemo.com,M,NYC,NY,2021-10-22T09:11:11.816319Z\n201,Sandeep_csv1,Aulakh_csv1,saulakh+ntodemo.com,M,NYC,NY,2021-11-22T09:11:11.816319Z\n",
+											"options": {
+												"raw": {
+													"language": "text"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{dne_cdpOffcoreUrl}}/api/v1/ingest/jobs/78f56f55-c00a-4e20-ab7d-03307a319ff2/batches",
+											"protocol": "https",
+											"host": [
+												"{{dne_cdpOffcoreUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"ingest",
+												"jobs",
+												"78f56f55-c00a-4e20-ab7d-03307a319ff2",
+												"batches"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [],
+									"cookie": [],
+									"body": "{\n    \"accepted\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "Close Job",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJraWQiOiJDT1JFLjAwRDN5MDAwMDAxVEJrWi4xNjk5NTc4OTMxMDg0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tL2lkLzAwRDN5MDAwMDAxVEJrWkVBVy8wMDUzeTAwMDAwSDhLYktBQVYiLCJzY3AiOiJjZHBfaW5nZXN0X2FwaSBjZHBfYXBpIGNkcF9xdWVyeV9hcGkiLCJpc3MiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tLyIsIm9yZ0lkIjoiMDBEM3kwMDAwMDFUQmtaIiwiaXNzdWVyVGVuYW50SWQiOiJjb3JlL3Byb2QvMDBEM3kwMDAwMDFUQmtaRUFXIiwic2ZhcHBpZCI6IjNNVkc5bGc4MWpUZzczVmdpN1pycnd6cnEyNGM5eGdQNUdIeXRvLmR6ZW9Odjg4a0VFaVUuZTBIdXdEZ3Rrd3JubVhLalNPUnlQVkFkQXlDWFRGNFoiLCJhdWRpZW5jZVRlbmFudElkIjoiYTM2MC9wcm9kL2U3NjAxMDEyZWU5MDRjYWM4ODMyNzUxZjVjNjM0MzE2IiwiY3VzdG9tX2F0dHJpYnV0ZXMiOnsiZGF0YXNwYWNlIjoiZGVmYXVsdCJ9LCJhdWQiOiJhcGkuYTM2MC5zYWxlc2ZvcmNlLmNvbSIsIm5iZiI6MTcwNDY3ODc2MCwic2ZvaWQiOiIwMEQzeTAwMDAwMVRCa1oiLCJzZnVpZCI6IjAwNTN5MDAwMDBIOEtiSyIsImV4cCI6MTcwNDY4NjAwNiwiaWF0IjoxNzA0Njc4ODIwLCJqdGkiOiIwMDVjZjg4MS0yOWM1LTQ1MmItYTk1Zi1iNzViOWVlYzcxZTgifQ.q0NpdL39bSOYIPwr7L5_b172d5jAwwaSsLFojJEGTuCdh6jDeY2dEmzm9J2JDGQdhEyx-GvPfcG7TZh0kML9uw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"state\" : \"UploadComplete\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://TSE.c360a.salesforce.com/api/v1/ingest/jobs/JOBID/batches",
+									"protocol": "https",
+									"host": [
+										"TSE",
+										"c360a",
+										"salesforce",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"ingest",
+										"jobs",
+										"JOBID",
+										"batches"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Close Job",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n   \"state\" : \"UploadComplete\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{dne_cdpOffcoreUrl}}/api/v1/ingest/jobs/b1b79aa2-b846-403a-b41f-d89932f0b2ae",
+											"protocol": "https",
+											"host": [
+												"{{dne_cdpOffcoreUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"ingest",
+												"jobs",
+												"b1b79aa2-b846-403a-b41f-d89932f0b2ae"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [],
+									"cookie": [],
+									"body": "{\n    \"object\": \"runner_profiles\",\n    \"id\": \"b1b79aa2-b846-403a-b41f-d89932f0b2ae\",\n    \"operation\": \"upsert\",\n    \"sourceName\": \"Event_API\",\n    \"createdById\": \"0053y00000FUGfBAAX\",\n    \"createdDate\": \"2021-10-28T17:14:58.692891Z\",\n    \"systemModstamp\": \"2021-10-28T19:41:02.292527Z\",\n    \"state\": \"UploadComplete\",\n    \"contentType\": \"CSV\",\n    \"apiVersion\": \"v1\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Job Info Copy",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://TSE/api/v1/ingest/jobs/JOBID",
+									"protocol": "https",
+									"host": [
+										"TSE"
+									],
+									"path": [
+										"api",
+										"v1",
+										"ingest",
+										"jobs",
+										"JOBID"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Job Info",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{dne_cdpOffcoreUrl}}/api/v1/ingest/jobs/b1b79aa2-b846-403a-b41f-d89932f0b2ae",
+											"protocol": "https",
+											"host": [
+												"{{dne_cdpOffcoreUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"ingest",
+												"jobs",
+												"b1b79aa2-b846-403a-b41f-d89932f0b2ae"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [],
+									"cookie": [],
+									"body": "{\n    \"object\": \"runner_profiles\",\n    \"id\": \"b1b79aa2-b846-403a-b41f-d89932f0b2ae\",\n    \"operation\": \"upsert\",\n    \"sourceName\": \"Event_API\",\n    \"createdById\": \"0053y00000FUGfBAAX\",\n    \"createdDate\": \"2021-10-28T17:14:58.692891Z\",\n    \"systemModstamp\": \"2021-10-28T17:14:58.692891Z\",\n    \"state\": \"Open\",\n    \"contentType\": \"CSV\",\n    \"apiVersion\": \"v1\",\n    \"contentUrl\": \"/api/v1/ingest/jobs/b1b79aa2-b846-403a-b41f-d89932f0b2ae/batches\",\n    \"retries\": 0,\n    \"totalProcessingTime\": 0\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"/* Begin Usage Tracking */",
+					"pm.sendRequest('www.google-analytics.com/collect?v=1&tid=UA-114173005-2&cid=1&t=pageview&dh=mcexperts.ninja&dp=/projects/postman/collection/run&dt=PostmanC360CollectionRun');",
+					"/* End Usage Tracking */",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "loginUrl",
+			"value": "login.salesforce.com"
+		},
+		{
+			"key": "version",
+			"value": "52.0"
+		},
+		{
+			"key": "clientId",
+			"value": ""
+		},
+		{
+			"key": "clientSecret",
+			"value": ""
+		},
+		{
+			"key": "privateKey",
+			"value": ""
+		},
+		{
+			"key": "userName",
+			"value": ""
+		},
+		{
+			"key": "securityToken",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "dne_cdpOffcoreUrl",
+			"value": ""
+		},
+		{
+			"key": "dne_cdpOffcoreToken",
+			"value": ""
+		},
+		{
+			"key": "dne_cdpInstanceUrl",
+			"value": ""
+		},
+		{
+			"key": "dne_cdpAuthToken",
+			"value": ""
+		}
+	]
+}
